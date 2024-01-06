@@ -1,13 +1,14 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"minka/support/pkg/routes"
+)
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello! 🤘")
-	})
+	app.Get("/", routes.CreateBundle)
 
 	app.Listen(":3000")
 }
