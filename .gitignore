@@ -1,5 +1,7 @@
 # Dirs
 bin
+tmp
 
 # Files
 __*
+*.log
