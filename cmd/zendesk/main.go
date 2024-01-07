@@ -8,7 +8,15 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Get("/", routes.CreateBundle)
+	api := app.Group("/api")
+
+	zendesk := api.Group(("/zendesk"))
+	zendesk.Post("/create-zis", routes.CreateBundle)
+
+	serviceNow := api.Group("/service-now")
+	serviceNow.Patch("/sc_task/:id", routes.UpdateTask)
+	serviceNow.Patch("/sc_req_item/:id", routes.UpdateRequirement)
+	serviceNow.Patch("/problem/:id", routes.UpdateProblem)
 
 	app.Listen(":3000")
 }
