@@ -2,7 +2,6 @@ package routes
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"minka/support/pkg/common"
@@ -18,9 +17,21 @@ func CreateBundle(c *fiber.Ctx) error {
 	content, err := common.ReadFile("bundle.json")
 	if err != nil {
 		log.Println("Error reading bundle.json file")
-		return c.SendStatus(http.StatusInternalServerError)
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
+	errs := createBundle(content)
+
+	if len(errs) > 0 {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"errors": errs,
+		})
+	}
+
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func createBundle(content []byte) []error {
 	url := URL + "/api/services/zis/registry/service-now-dev/bundles"
 	username := os.Getenv("ZENDESK_USERNAME")
 	password := os.Getenv("ZENDESK_PASSWORD")
@@ -32,15 +43,9 @@ func CreateBundle(c *fiber.Ctx) error {
 
 	statusCode, _, errs := agent.Bytes()
 
-	if len(errs) > 0 {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"errs": errs,
-		})
-	}
+	log.Printf("Create bundle, response status code: %d", statusCode)
 
-	log.Printf("Status code: %d", statusCode)
-
-	return c.SendStatus(http.StatusOK)
+	return errs
 }
 
 func UpdateTask(c *fiber.Ctx) error {
