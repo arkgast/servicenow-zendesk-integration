@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func ReadAndParseJSON(fileName string) (map[string]interface{}, error) {
+func ReadFile(fileName string) ([]byte, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -21,17 +21,21 @@ func ReadAndParseJSON(fileName string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	jsonData, err := io.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 
+	return data, nil
+}
+
+func ParseJSON(data []byte) (map[string]interface{}, error) {
 	var parsedData map[string]interface{}
-	if err := json.Unmarshal(jsonData, &parsedData); err != nil {
+	if err := json.Unmarshal(data, &parsedData); err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 
-	return parsedData, err
+	return parsedData, nil
 }
