@@ -8,8 +8,8 @@
             "properties": {
                 "name": "updateServiceNowTicket",
                 "definition": {
-                    "method": "PUT",
-                    "url": "https://1791-177-222-98-244.ngrok-free.app/api/v1/update-ticket",
+                    "method": "PATCH",
+                    "url": "https://1791-177-222-98-244.ngrok-free.app/api/service-now/sc_task/1",
                     "requestBody": {
                         "state.$": "$.state"
                     }
@@ -27,8 +27,8 @@
                             "Type": "Choice",
                             "Choices": [
                                 {
-                                    "Variable": "$.ticket_event.priority",
-                                    "StringEquals": "high",
+                                    "Variable": "$.input.ticket_event.ticket.priority",
+                                    "StringEquals": "normal",
                                     "Next": "updateTask"
                                 }
                             ],
