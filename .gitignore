@@ -5,3 +5,4 @@ tmp
 # Files
 __*
 *.log
+.env

@@ -1,11 +1,20 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"log"
 	"minka/support/pkg/routes"
+	"os"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
 	app := fiber.New()
 
 	api := app.Group("/api")
@@ -18,5 +27,13 @@ func main() {
 	serviceNow.Patch("/sc_req_item/:id", routes.UpdateRequirement)
 	serviceNow.Patch("/problem/:id", routes.UpdateProblem)
 
-	app.Listen(":3000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	log.Printf("Listening on port %s", port)
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf("Error starting the server on port %s: %v", port, err)
+	}
 }
