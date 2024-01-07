@@ -1,3 +1,62 @@
 {
-  "hello": "world"
+    "zis_template_version": "2019-10-14",
+    "name": "UpdateTicketSync",
+    "description": "Sync ticket update on Service Now.",
+    "resources": {
+        "updateServiceNowTicket": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowTicket",
+                "definition": {
+                    "method": "PUT",
+                    "url": "https://1791-177-222-98-244.ngrok-free.app/api/v1/update-ticket",
+                    "requestBody": {
+                        "state.$": "$.state"
+                    }
+                }
+            }
+        },
+        "UpdateTicketFlow": {
+            "type": "ZIS::Flow",
+            "properties": {
+                "name": "UpdateTicketFlow",
+                "definition": {
+                    "StartAt": "CheckTicketType",
+                    "States": {
+                        "CheckTicketType": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "Variable": "$.ticket_event.priority",
+                                    "StringEquals": "high",
+                                    "Next": "updateTask"
+                                }
+                            ],
+                            "Default": "Finish"
+                        },
+                        "updateTask": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "Parameters": {
+                                "state.$": "$.input.ticket_event.ticket.status"
+                            },
+                            "End": true
+                        },
+                        "Finish": {
+                            "Type": "Succeed"
+                        }
+                    }
+                }
+            }
+        },
+        "UpdateTicketSpec": {
+            "type": "ZIS::JobSpec",
+            "properties": {
+                "name": "UpdateTicketSpec",
+                "event_source": "support",
+                "event_type": "ticket.StatusChanged",
+                "flow_name": "zis:service-now-dev:flow:UpdateTicketFlow"
+            }
+        }
+    }
 }
