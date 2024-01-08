@@ -74,6 +74,8 @@ func installJobSpec() []error {
 func UpdateTask(c *fiber.Ctx) error {
 	log.Println("Updating task...")
 
+	log.Println("ID: ", c.Params("id"))
+	log.Println("Authorization: ", c.Get("Authorization"))
 	common.PrettyPrintJSON(c.Body())
 
 	return nil
@@ -82,6 +84,8 @@ func UpdateTask(c *fiber.Ctx) error {
 func UpdateRequirement(c *fiber.Ctx) error {
 	log.Println("Updating requirement...")
 
+	log.Println("ID: ", c.Params("id"))
+	log.Println("Authorization: ", c.Get("Authorization"))
 	common.PrettyPrintJSON(c.Body())
 
 	return nil
@@ -90,6 +94,8 @@ func UpdateRequirement(c *fiber.Ctx) error {
 func UpdateProblem(c *fiber.Ctx) error {
 	log.Println("Updating problem...")
 
+	log.Println("ID: ", c.Params("id"))
+	log.Println("Authorization: ", c.Get("Authorization"))
 	common.PrettyPrintJSON(c.Body())
 
 	return nil
