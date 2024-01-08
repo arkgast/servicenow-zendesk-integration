@@ -9,7 +9,7 @@
                 "name": "updateServiceNowTicket",
                 "definition": {
                     "method": "PATCH",
-                    "url": "https://1791-177-222-98-244.ngrok-free.app/api/service-now/sc_task/1",
+                    "url": "https://1791-177-222-98-244.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
                     "requestBody": {
                         "state.$": "$.state"
                     }
@@ -48,6 +48,8 @@
                             "Type": "Action",
                             "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
                             "Parameters": {
+                                "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
                                 "state.$": "$.mapped_state"
                             },
                             "End": true
