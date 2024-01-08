@@ -3,10 +3,10 @@
     "name": "UpdateTicketSync",
     "description": "Sync ticket update on Service Now.",
     "resources": {
-        "updateServiceNowTicket": {
+        "UpdateServiceNowTicket": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateServiceNowTicket",
+                "name": "UpdateServiceNowTicket",
                 "definition": {
                     "method": "PATCH",
                     "url": "https://1791-177-222-98-244.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
@@ -29,12 +29,12 @@
                                 {
                                     "Variable": "$.input.ticket_event.ticket.priority",
                                     "StringEquals": "normal",
-                                    "Next": "mapStates"
+                                    "Next": "MapUpdateTaskStates"
                                 }
                             ],
                             "Default": "Finish"
                         },
-                        "mapStates": {
+                        "MapUpdateTaskStates": {
                             "Type": "Action",
                             "ActionName": "zis:common:transform:Jq",
                             "Parameters": {
@@ -42,11 +42,11 @@
                                 "expr": ". as $status | if $status == \"on-hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
-                            "Next": "updateTask"
+                            "Next": "UpdateTask"
                         },
-                        "updateTask": {
+                        "UpdateTask": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "ActionName": "zis:service-now-dev:action:UpdateServiceNowTicket",
                             "Parameters": {
                                 "endpoint": "sc_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
