@@ -29,16 +29,26 @@
                                 {
                                     "Variable": "$.input.ticket_event.ticket.priority",
                                     "StringEquals": "normal",
-                                    "Next": "updateTask"
+                                    "Next": "mapStates"
                                 }
                             ],
                             "Default": "Finish"
+                        },
+                        "mapStates": {
+                            "Type": "Action",
+                            "ActionName": "zis:common:transform:Jq",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"on-hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Next": "updateTask"
                         },
                         "updateTask": {
                             "Type": "Action",
                             "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
                             "Parameters": {
-                                "state.$": "$.input.ticket_event.ticket.status"
+                                "state.$": "$.mapped_state"
                             },
                             "End": true
                         },
