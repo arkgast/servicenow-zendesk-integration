@@ -27,12 +27,25 @@
                             "Type": "Choice",
                             "Choices": [
                                 {
-                                    "Variable": "$.input.ticket_event.ticket.priority",
-                                    "StringEquals": "normal",
+                                    "Variable": "$.input.ticket_event.ticket.ticket_form_id",
+                                    "NumericEquals": 6250003915931,
                                     "Next": "MapUpdateTaskStates"
+                                },
+                                {
+                                    "Variable": "$.input.ticket_event_ticket.ticket_form_id",
+                                    "StringEquals": 6250005165595,
+                                    "Next": "Finish"
+                                },
+                                {
+                                    "Variable": "$.input.ticket_event_ticket.ticket_form_id",
+                                    "StringEquals": 5863488158747,
+                                    "Next": "Finish"
                                 }
                             ],
                             "Default": "Finish"
+                        },
+                        {
+
                         },
                         "MapUpdateTaskStates": {
                             "Type": "Action",
@@ -50,8 +63,7 @@
                             "Parameters": {
                                 "endpoint": "sc_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
-                                "state.$": "$.mapped_state",
-                                "comment.$": "$.input.ticket_event.ticket.comment.body"
+                                "state.$": "$.mapped_state"
                             },
                             "End": true
                         },
