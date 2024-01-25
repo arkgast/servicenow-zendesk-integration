@@ -104,6 +104,7 @@ func UpdateProblem(c *fiber.Ctx) error {
 func AttachFile(c *fiber.Ctx) error {
 	log.Println("Attaching file...")
 
+	log.Println("Authorization: ", c.Get("Authorization"))
 	log.Println("Content-Type: ", c.Get("Content-Type"))
 
 	log.Println("Query Params:")
