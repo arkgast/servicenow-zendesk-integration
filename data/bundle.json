@@ -9,7 +9,7 @@
                 "name": "updateServiceNowTicket",
                 "definition": {
                     "method": "PATCH",
-                    "url": "https://d08d-177-222-98-244.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
+                    "url": "https://a95b-177-222-98-250.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
                     "requestBody": {
                         "state.$": "$.state"
                     }
@@ -32,12 +32,12 @@
                                     "Next": "MapUpdateTaskStates"
                                 },
                                 {
-                                    "Variable": "$.input.ticket_event_ticket.form_id",
+                                    "Variable": "$.input.ticket_event.ticket.form_id",
                                     "NumericEquals": 6250005165595,
                                     "Next": "MapUpdateRequirementStates"
                                 },
                                 {
-                                    "Variable": "$.input.ticket_event_ticket.form_id",
+                                    "Variable": "$.input.ticket_event.ticket.form_id",
                                     "NumericEquals": 5863488158747,
                                     "Next": "MapUpdateProblemStates"
                                 }
