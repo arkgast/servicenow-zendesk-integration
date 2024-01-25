@@ -9,7 +9,7 @@
                 "name": "updateServiceNowTicketAttachFile",
                 "definition": {
                     "method": "POST",
-                    "url": "https://a95b-177-222-98-250.ngrok-free.app/api/service-now/attachment/file",
+                    "url": "https://achdev.service-now.com/api/service-now/attachment/file",
                     "headers": [
                         {
                             "key": "Content-Type",
@@ -18,6 +18,10 @@
                         {
                             "key": "Accept",
                             "value": "application/json"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "{{BA}}"
                         }
                     ],
                     "queryParams": [

@@ -9,7 +9,13 @@
                 "name": "updateServiceNowTicketAddComment",
                 "definition": {
                     "method": "PATCH",
-                    "url": "https://a95b-177-222-98-250.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
+                    "url": "https://achdev.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{BA}}"
+                        }
+                    ],
                     "requestBody": {
                         "work_notes.$": "$.comment"
                     }

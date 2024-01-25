@@ -22,10 +22,12 @@ func main() {
 	zendesk := api.Group(("/zendesk"))
 	zendesk.Post("/create-zis", routes.CreateBundle)
 
+	now := api.Group("/now")
+	now.Patch("/table/sc_task/:id", routes.UpdateTask)
+	now.Patch("/table/sc_req_item/:id", routes.UpdateRequirement)
+	now.Patch("/table/problem/:id", routes.UpdateProblem)
+
 	serviceNow := api.Group("/service-now")
-	serviceNow.Patch("/sc_task/:id", routes.UpdateTask)
-	serviceNow.Patch("/sc_req_item/:id", routes.UpdateRequirement)
-	serviceNow.Patch("/problem/:id", routes.UpdateProblem)
 	serviceNow.Post("/attachment/file", routes.AttachFile)
 
 	port := os.Getenv("PORT")
