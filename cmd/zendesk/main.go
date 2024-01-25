@@ -26,6 +26,7 @@ func main() {
 	serviceNow.Patch("/sc_task/:id", routes.UpdateTask)
 	serviceNow.Patch("/sc_req_item/:id", routes.UpdateRequirement)
 	serviceNow.Patch("/problem/:id", routes.UpdateProblem)
+	serviceNow.Post("/attachment/file", routes.AttachFile)
 
 	port := os.Getenv("PORT")
 	if port == "" {

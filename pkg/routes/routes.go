@@ -100,3 +100,30 @@ func UpdateProblem(c *fiber.Ctx) error {
 
 	return nil
 }
+
+func AttachFile(c *fiber.Ctx) error {
+	log.Println("Attaching file...")
+
+	log.Println("Content-Type: ", c.Get("Content-Type"))
+
+	log.Println("Query Params:")
+
+	// Accessing query parameters
+	tableName := c.Query("table_name")
+	tableSysID := c.Query("table_sys_id")
+	filename := c.Query("file_name")
+	log.Println("table_name:", tableName)
+	log.Println("table_sys_id:", tableSysID)
+	log.Println("file_name:", filename)
+
+	// Parse the form data, including files
+	file, err := c.FormFile("file")
+	if err != nil {
+		log.Println("Error parsing form file")
+	} else {
+		log.Println("Received file: ", file.Filename)
+		log.Println("File size: ", file.Size)
+	}
+
+	return nil
+}
