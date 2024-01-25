@@ -1,0 +1,94 @@
+{
+    "zis_template_version": "2019-10-14",
+    "name": "UpdateTicketComment",
+    "description": "Sync ticket on Service Now, add comment.",
+    "resources": {
+        "UpdateServiceNowTicketAddComment": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowTicketAddComment",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://a95b-177-222-98-250.ngrok-free.app/api/service-now/{{$.endpoint}}/{{$.external_id}}",
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    }
+                }
+            }
+        },
+        "UpdateTicketAddCommentFlow": {
+            "type": "ZIS::Flow",
+            "properties": {
+                "name": "UpdateTicketAddCommentFlow",
+                "definition": {
+                    "StartAt": "CheckTicketType",
+                    "States": {
+                        "CheckTicketType": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "Variable": "$.input.ticket_event.ticket.form_id",
+                                    "NumericEquals": 6250003915931,
+                                    "Next": "UpdateTask"
+                                },
+                                {
+                                    "Variable": "$.input.ticket_event.ticket.form_id",
+                                    "NumericEquals": 6250005165595,
+                                    "Next": "UpdateRequirement"
+                                },
+                                {
+                                    "Variable": "$.input.ticket_event.ticket.form_id",
+                                    "NumericEquals": 5863488158747,
+                                    "Next": "UpdateProblem"
+                                }
+                            ],
+                            "Default": "Finish"
+                        },
+                        "UpdateTask": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "Parameters": {
+                                "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "comment.$": "$.input.ticket_event.comment.body"
+                            },
+                            "End": true
+                        },
+                        "UpdateRequirement": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "Parameters": {
+                                "endpoint": "sc_req_item",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "comment.$": "$.input.ticket_event.comment.body"
+                            },
+                            "End": true
+                        },
+                        "UpdateProblem": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "Parameters": {
+                                "endpoint": "problem",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "comment.$": "$.input.ticket_event.comment.body"
+                            },
+                            "End": true
+                        },
+                        "Finish": {
+                            "Type": "Succeed"
+                        }
+                    }
+                }
+            }
+        },
+        "UpdateTicketAddCommentSpec": {
+            "type": "ZIS::JobSpec",
+            "properties": {
+                "name": "UpdateTicketAddCommentSpec",
+                "event_source": "support",
+                "event_type": "ticket.CommentAdded",
+                "flow_name": "zis:service-now-dev:flow:UpdateTicketAddCommentFlow"
+            }
+        }
+    }
+}
