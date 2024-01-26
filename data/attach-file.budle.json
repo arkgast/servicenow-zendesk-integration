@@ -21,7 +21,7 @@
                         },
                         {
                             "key": "Authorization",
-                            "value": "{{BA}}"
+                            "value": "{{SN_BA}}"
                         }
                     ],
                     "queryParams": [
@@ -40,6 +40,36 @@
                     ],
                     "requestBody": {
                         "file.$": "$.content_url"
+                    }
+                }
+            }
+        },
+        "UpdateZendeskCustomField": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateZendeskCustomField",
+                "definition": {
+                    "method": "PUT",
+                    "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}",
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "{{ZD_BA}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "ticket": {
+                            "custom_fields": [
+                                {
+                                    "id": "22412711821211",
+                                    "value": false
+                                }
+                            ]
+                        }
                     }
                 }
             }
@@ -121,6 +151,11 @@
                                         }
                                     ],
                                     "Next": "UpdateProblem"
+                                },
+                                {
+                                    "Variable": "$.isServiceNowUpdate",
+                                    "BooleanEquals": true,
+                                    "Next": "UpdateCustomFieldOnZendesk"
                                 }
                             ],
                             "Default": "Finish"
@@ -158,6 +193,14 @@
                                 "content_url.$": "$.input.ticket_event.attachment.content_url",
                                 "content_type.$": "$.input.ticket_event.attachment.content_type",
                                 "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "End": true
+                        },
+                        "UpdateCustomFieldOnZendesk": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomField",
+                            "Parameters": {
+                                "ticket_id.$": "$.input.ticket_event.ticket.id"
                             },
                             "End": true
                         },
