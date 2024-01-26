@@ -49,24 +49,77 @@
             "properties": {
                 "name": "UpdateTicketAttachFileFlow",
                 "definition": {
-                    "StartAt": "CheckTicketType",
+                    "StartAt": "InitialCheck",
                     "States": {
+                        "InitialCheck": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.tags",
+                                            "IsPresent": true
+                                        },
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.external_id",
+                                            "IsPresent": true
+                                        }
+                                    ],
+                                    "Next": "TagsPresent"
+                                }
+                            ],
+                            "Default": "Finish"
+                        },
+                        "TagsPresent": {
+                            "Type": "Action",
+                            "ActionName": "zis:common:transform:Jq",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.tags",
+                                "expr": "index(\"service-now-update\") != null"
+                            },
+                            "ResultPath": "$.isServiceNowUpdate",
+                            "Next": "CheckTicketType"
+                        },
                         "CheckTicketType": {
                             "Type": "Choice",
                             "Choices": [
                                 {
-                                    "Variable": "$.input.ticket_event.ticket.form_id",
-                                    "NumericEquals": 6250003915931,
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.form_id",
+                                            "NumericEquals": 6250003915931
+                                        },
+                                        {
+                                            "Variable": "$.isServiceNowUpdate",
+                                            "BooleanEquals": false
+                                        }
+                                    ],
                                     "Next": "UpdateTask"
                                 },
                                 {
-                                    "Variable": "$.input.ticket_event.ticket.form_id",
-                                    "NumericEquals": 6250005165595,
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.form_id",
+                                            "NumericEquals": 6250005165595
+                                        },
+                                        {
+                                            "Variable": "$.isServiceNowUpdate",
+                                            "BooleanEquals": false
+                                        }
+                                    ],
                                     "Next": "UpdateRequirement"
                                 },
                                 {
-                                    "Variable": "$.input.ticket_event.ticket.form_id",
-                                    "NumericEquals": 5863488158747,
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.form_id",
+                                            "NumericEquals": 5863488158747
+                                        },
+                                        {
+                                            "Variable": "$.isServiceNowUpdate",
+                                            "BooleanEquals": false
+                                        }
+                                    ],
                                     "Next": "UpdateProblem"
                                 }
                             ],
