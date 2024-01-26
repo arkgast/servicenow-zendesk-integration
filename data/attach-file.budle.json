@@ -9,7 +9,7 @@
                 "name": "updateServiceNowTicketAttachFile",
                 "definition": {
                     "method": "POST",
-                    "url": "https://achdev.service-now.com/api/service-now/attachment/file",
+                    "url": "https://achdev.service-now.com/api/now/attachment/file",
                     "headers": [
                         {
                             "key": "Content-Type",
