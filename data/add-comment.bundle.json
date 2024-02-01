@@ -1,7 +1,7 @@
 {
     "zis_template_version": "2019-10-14",
-    "name": "UpdateTicketComment",
-    "description": "Sync ticket on Service Now, add comment.",
+    "name": "AddTicketComment",
+    "description": "Add comment on Service Now.",
     "resources": {
         "UpdateServiceNowTicketAddComment": {
             "type": "ZIS::Action::Http",

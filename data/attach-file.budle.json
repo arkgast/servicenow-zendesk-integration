@@ -1,7 +1,7 @@
 {
     "zis_template_version": "2019-10-14",
-    "name": "UpdateTicketComment",
-    "description": "Sync ticket on Service Now, attach file.",
+    "name": "AddTicketAttachment",
+    "description": "Add ticket attachment on Service Now.",
     "resources": {
         "UpdateServiceNowTicketAttachFile": {
             "type": "ZIS::Action::Http",

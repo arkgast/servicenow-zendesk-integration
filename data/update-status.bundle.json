@@ -1,7 +1,7 @@
 {
     "zis_template_version": "2019-10-14",
-    "name": "UpdateTicketSync",
-    "description": "Sync ticket update on Service Now.",
+    "name": "UpdateTicketStatus",
+    "description": "Update ticket status on Service Now.",
     "resources": {
         "UpdateServiceNowTicket": {
             "type": "ZIS::Action::Http",
