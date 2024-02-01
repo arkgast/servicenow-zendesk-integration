@@ -74,10 +74,10 @@
                 }
             }
         },
-        "UpdateTicketAttachFileFlow": {
+        "AddTicketAttachmentFlow": {
             "type": "ZIS::Flow",
             "properties": {
-                "name": "UpdateTicketAttachFileFlow",
+                "name": "AddTicketAttachmentFlow",
                 "definition": {
                     "StartAt": "InitialCheck",
                     "States": {
@@ -217,7 +217,7 @@
                 "name": "UpdateTicketAttachFileSpec",
                 "event_source": "support",
                 "event_type": "ticket.AttachmentLinkedToComment",
-                "flow_name": "zis:service-now-dev:flow:UpdateTicketAttachFileFlow"
+                "flow_name": "zis:service-now-dev:flow:AddTicketAttachmentFlow"
             }
         }
     }

@@ -52,10 +52,10 @@
                 }
             }
         },
-        "UpdateTicketAddCommentFlow": {
+        "AddTicketCommentFlow": {
             "type": "ZIS::Flow",
             "properties": {
-                "name": "UpdateTicketAddCommentFlow",
+                "name": "AddTicketCommentFlow",
                 "definition": {
                     "StartAt": "InitialCheck",
                     "States": {
@@ -189,7 +189,7 @@
                 "name": "UpdateTicketAddCommentSpec",
                 "event_source": "support",
                 "event_type": "ticket.CommentAdded",
-                "flow_name": "zis:service-now-dev:flow:UpdateTicketAddCommentFlow"
+                "flow_name": "zis:service-now-dev:flow:AddTicketCommentFlow"
             }
         }
     }
