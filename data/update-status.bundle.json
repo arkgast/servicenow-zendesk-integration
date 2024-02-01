@@ -52,10 +52,10 @@
                 }
             }
         },
-        "UpdateTicketFlow": {
+        "UpdateTicketStatusFlow": {
             "type": "ZIS::Flow",
             "properties": {
-                "name": "UpdateTicketFlow",
+                "name": "UpdateTicketStatusFlow",
                 "definition": {
                     "StartAt": "InitialCheck",
                     "States": {
@@ -213,13 +213,13 @@
                 }
             }
         },
-        "UpdateTicketSpec": {
+        "UpdateTicketStatusSpec": {
             "type": "ZIS::JobSpec",
             "properties": {
-                "name": "UpdateTicketSpec",
+                "name": "UpdateTicketStatusSpec",
                 "event_source": "support",
                 "event_type": "ticket.StatusChanged",
-                "flow_name": "zis:service-now-dev:flow:UpdateTicketFlow"
+                "flow_name": "zis:service-now-dev:flow:UpdateTicketStatusFlow"
             }
         }
     }
