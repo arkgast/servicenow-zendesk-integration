@@ -183,10 +183,10 @@
                 }
             }
         },
-        "UpdateTicketAddCommentSpec": {
+        "AddTicketCommentSpec": {
             "type": "ZIS::JobSpec",
             "properties": {
-                "name": "UpdateTicketAddCommentSpec",
+                "name": "AddTicketCommentSpec",
                 "event_source": "support",
                 "event_type": "ticket.CommentAdded",
                 "flow_name": "zis:service-now-dev:flow:AddTicketCommentFlow"

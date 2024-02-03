@@ -211,10 +211,10 @@
                 }
             }
         },
-        "UpdateTicketAttachFileSpec": {
+        "AddTicketAttachmentSpec": {
             "type": "ZIS::JobSpec",
             "properties": {
-                "name": "UpdateTicketAttachFileSpec",
+                "name": "AddTicketAttachmentSpec",
                 "event_source": "support",
                 "event_type": "ticket.AttachmentLinkedToComment",
                 "flow_name": "zis:service-now-dev:flow:AddTicketAttachmentFlow"
