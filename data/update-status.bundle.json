@@ -108,6 +108,19 @@
                                     "And": [
                                         {
                                             "Variable": "$.input.ticket_event.ticket.form_id",
+                                            "NumericEquals": 22946909984155
+                                        },
+                                        {
+                                            "Variable": "$.isServiceNowUpdate",
+                                            "BooleanEquals": false
+                                        }
+                                    ],
+                                    "Next": "MapUpdateIncidentTaskStates"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.form_id",
                                             "NumericEquals": 6250005165595
                                         },
                                         {
@@ -153,6 +166,26 @@
                             "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
                             "Parameters": {
                                 "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "state.$": "$.mapped_state"
+                            },
+                            "End": true
+                        },
+                        "MapUpdateIncidentTaskStates": {
+                            "Type": "Action",
+                            "ActionName": "zis:common:transform:Jq",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Next": "UpdateIncidentTask"
+                        },
+                        "UpdateIncidentTask": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "Parameters": {
+                                "endpoint": "incident_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
                                 "state.$": "$.mapped_state"
                             },
