@@ -3,10 +3,20 @@
     "name": "AddTicketAttachment",
     "description": "Add ticket attachment on Service Now.",
     "resources": {
-        "UpdateServiceNowTicketAttachFile": {
+        "DownloadFileFromZendesk": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateServiceNowTicketAttachFile",
+                "name": "downloadFileFromZendesk",
+                "definition": {
+                    "method": "GET",
+                    "url.$": "$.content_url"
+                }
+            }
+        },
+        "UploadFileToServiceNow": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "uploadFileToServiceNow",
                 "definition": {
                     "method": "POST",
                     "url": "https://achdev.service-now.com/api/now/attachment/file",
@@ -39,7 +49,7 @@
                         }
                     ],
                     "requestBody": {
-                        "file.$": "$.content_url"
+                        "file.$": "$.attachment"
                     }
                 }
             }
@@ -124,7 +134,7 @@
                                             "BooleanEquals": false
                                         }
                                     ],
-                                    "Next": "UpdateTask"
+                                    "Next": "UpdateTaskDownloadFile"
                                 },
                                 {
                                     "And": [
@@ -137,7 +147,7 @@
                                             "BooleanEquals": false
                                         }
                                     ],
-                                    "Next": "UpdateIncidentTask"
+                                    "Next": "UpdateIncidentTaskDownloadFile"
                                 },
                                 {
                                     "And": [
@@ -150,7 +160,7 @@
                                             "BooleanEquals": false
                                         }
                                     ],
-                                    "Next": "UpdateRequirement"
+                                    "Next": "UpdateRequirementDownloadFile"
                                 },
                                 {
                                     "And": [
@@ -163,7 +173,7 @@
                                             "BooleanEquals": false
                                         }
                                     ],
-                                    "Next": "UpdateProblem"
+                                    "Next": "UpdateProblemDownloadFile"
                                 },
                                 {
                                     "Variable": "$.isServiceNowUpdate",
@@ -173,50 +183,82 @@
                             ],
                             "Default": "Finish"
                         },
-                        "UpdateTask": {
+                        "UpdateTaskDownloadFile": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Next": "UpdateTaskUploadFile"
+                        },
+                        "UpdateTaskUploadFile": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
                             "Parameters": {
                                 "endpoint": "sc_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
-                                "content_url.$": "$.input.ticket_event.attachment.content_url",
-                                "content_type.$": "$.input.ticket_event.attachment.content_type",
+                                "attachment.$": "$.attachment",
                                 "filename.$": "$.input.ticket_event.attachment.filename"
                             },
                             "End": true
                         },
-                        "UpdateIncidentTask": {
+                        "UpdateIncidentTaskDownloadFile": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Next": "UpdateIncidentTaskUploadFile"
+                        },
+                        "UpdateIncidentTaskUploadFile": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
                             "Parameters": {
                                 "endpoint": "incident_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
-                                "content_url.$": "$.input.ticket_event.attachment.content_url",
-                                "content_type.$": "$.input.ticket_event.attachment.content_type",
+                                "attachment.$": "$.attachment",
                                 "filename.$": "$.input.ticket_event.attachment.filename"
                             },
                             "End": true
                         },
-                        "UpdateRequirement": {
+                        "UpdateRequirementDownloadFile": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Next": "UpdateRequirementUploadFile"
+                        },
+                        "UpdateRequirementUploadFile": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
                             "Parameters": {
                                 "endpoint": "sc_req_item",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
-                                "content_url.$": "$.input.ticket_event.attachment.content_url",
-                                "content_type.$": "$.input.ticket_event.attachment.content_type",
+                                "attachment.$": "$.attachment",
                                 "filename.$": "$.input.ticket_event.attachment.filename"
                             },
                             "End": true
                         },
-                        "UpdateProblem": {
+                        "UpdateProblemDownloadFile": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Next": "UpdateProblemUploadFile"
+                        },
+                        "UpdateProblemUploadFile": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
                             "Parameters": {
                                 "endpoint": "problem",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
-                                "content_url.$": "$.input.ticket_event.attachment.content_url",
-                                "content_type.$": "$.input.ticket_event.attachment.content_type",
+                                "attachment.$": "$.attachment",
                                 "filename.$": "$.input.ticket_event.attachment.filename"
                             },
                             "End": true
