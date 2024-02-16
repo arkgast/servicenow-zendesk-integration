@@ -156,7 +156,7 @@
                             "ActionName": "zis:common:transform:Jq",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 6 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Next": "UpdateTask"
@@ -176,7 +176,7 @@
                             "ActionName": "zis:common:transform:Jq",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 401 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 6 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Next": "UpdateIncidentTask"
@@ -196,7 +196,7 @@
                             "ActionName": "zis:common:transform:Jq",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 7 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Next": "UpdateRequirement"
@@ -216,7 +216,7 @@
                             "ActionName": "zis:common:transform:Jq",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then -5 elif $status == \"open\" then 1 elif $status == \"pending\" then 2 elif $status == \"solved\" then 7 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 7 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Next": "UpdateProblem"
