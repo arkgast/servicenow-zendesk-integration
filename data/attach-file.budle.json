@@ -17,7 +17,7 @@
                         },
                         {
                             "key": "Accept",
-                            "value": "application/json"
+                            "value": "*/*"
                         },
                         {
                             "key": "Authorization",
@@ -130,6 +130,19 @@
                                     "And": [
                                         {
                                             "Variable": "$.input.ticket_event.ticket.form_id",
+                                            "NumericEquals": 22946909984155
+                                        },
+                                        {
+                                            "Variable": "$.isServiceNowUpdate",
+                                            "BooleanEquals": false
+                                        }
+                                    ],
+                                    "Next": "UpdateIncidentTask"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "Variable": "$.input.ticket_event.ticket.form_id",
                                             "NumericEquals": 6250005165595
                                         },
                                         {
@@ -165,6 +178,18 @@
                             "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
                             "Parameters": {
                                 "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "content_url.$": "$.input.ticket_event.attachment.content_url",
+                                "content_type.$": "$.input.ticket_event.attachment.content_type",
+                                "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "End": true
+                        },
+                        "UpdateIncidentTask": {
+                            "Type": "Action",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAttachFile",
+                            "Parameters": {
+                                "endpoint": "incident_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
                                 "content_url.$": "$.input.ticket_event.attachment.content_url",
                                 "content_type.$": "$.input.ticket_event.attachment.content_type",
