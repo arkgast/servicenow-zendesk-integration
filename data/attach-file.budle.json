@@ -19,7 +19,7 @@
                 "name": "uploadFileToServiceNow",
                 "definition": {
                     "method": "POST",
-                    "url": "https://achdev.service-now.com/api/now/attachment/file",
+                    "url": "https://achprd.service-now.com/api/now/attachment/file",
                     "headers": [
                         {
                             "key": "Content-Type",

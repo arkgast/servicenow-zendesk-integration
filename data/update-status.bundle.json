@@ -9,7 +9,7 @@
                 "name": "updateServiceNowTicket",
                 "definition": {
                     "method": "PATCH",
-                    "url": "https://achdev.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
                     "headers": [
                         {
                             "key": "Authorization",
