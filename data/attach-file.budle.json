@@ -31,7 +31,7 @@
                         },
                         {
                             "key": "Authorization",
-                            "value": "{{SN_BA}}"
+                            "value": "{{SN_BASIC}}"
                         }
                     ],
                     "queryParams": [
@@ -57,7 +57,7 @@
         "UpdateZendeskCustomField": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateZendeskCustomField",
+                "name": "updateZendeskCustomFieldAddAttachment",
                 "definition": {
                     "method": "PUT",
                     "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}",
@@ -68,7 +68,7 @@
                         },
                         {
                             "key": "Authorization",
-                            "value": "{{ZD_BA}}"
+                            "value": "{{ZD_BASIC}}"
                         }
                     ],
                     "requestBody": {
@@ -265,7 +265,7 @@
                         },
                         "UpdateCustomFieldOnZendesk": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomField",
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldAddAttachment",
                             "Parameters": {
                                 "ticket_id.$": "$.input.ticket_event.ticket.id"
                             },

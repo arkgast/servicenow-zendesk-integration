@@ -3,17 +3,74 @@
     "name": "AddTicketComment",
     "description": "Add comment on Service Now.",
     "resources": {
-        "UpdateServiceNowTicketAddComment": {
+        "UpdateServiceNowTicketAddCommentUpdateTask": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateServiceNowTicketAddComment",
+                "name": "updateServiceNowTicketAddCommentUpdateTask",
                 "definition": {
                     "method": "PATCH",
                     "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
                     "headers": [
                         {
                             "key": "Authorization",
-                            "value": "{{SN_BA}}"
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateIncidentTask": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowTicketAddCommentUpdateIncidentTask",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateRequirement": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowTicketAddCommentUpdateRequirement",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateProblem": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowTicketAddCommentUpdateProblem",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
                         }
                     ],
                     "requestBody": {
@@ -25,7 +82,7 @@
         "UpdateZendeskCustomField": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateZendeskCustomField",
+                "name": "updateZendeskCustomFieldAddComment",
                 "definition": {
                     "method": "PUT",
                     "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}",
@@ -36,7 +93,7 @@
                         },
                         {
                             "key": "Authorization",
-                            "value": "{{ZD_BA}}"
+                            "value": "{{ZD_BASIC}}"
                         }
                     ],
                     "requestBody": {
@@ -153,7 +210,7 @@
                         },
                         "UpdateTask": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateTask",
                             "Parameters": {
                                 "endpoint": "sc_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -163,7 +220,7 @@
                         },
                         "UpdateIncidentTask": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateIncidentTask",
                             "Parameters": {
                                 "endpoint": "incident_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -173,7 +230,7 @@
                         },
                         "UpdateRequirement": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateRequirement",
                             "Parameters": {
                                 "endpoint": "sc_req_item",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -183,7 +240,7 @@
                         },
                         "UpdateProblem": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddComment",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateProblem",
                             "Parameters": {
                                 "endpoint": "problem",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -193,7 +250,7 @@
                         },
                         "UpdateCustomFieldOnZendesk": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomField",
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldAddComment",
                             "Parameters": {
                                 "ticket_id.$": "$.input.ticket_event.ticket.id"
                             },

@@ -3,17 +3,74 @@
     "name": "UpdateTicketStatus",
     "description": "Update ticket status on Service Now.",
     "resources": {
-        "UpdateServiceNowTicket": {
+        "UpdateServiceNowTaskStatus": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateServiceNowTicket",
+                "name": "updateServiceNowTaskStatus",
                 "definition": {
                     "method": "PATCH",
                     "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
                     "headers": [
                         {
                             "key": "Authorization",
-                            "value": "{{SN_BA}}"
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "state.$": "$.state"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowIncidentTaskStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowIncidentTaskStatus",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "state.$": "$.state"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowRequirementStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowRequerimentStatus",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
+                        }
+                    ],
+                    "requestBody": {
+                        "state.$": "$.state"
+                    }
+                }
+            }
+        },
+        "UpdateServiceNowProblemStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "name": "updateServiceNowProblemStatus",
+                "definition": {
+                    "method": "PATCH",
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}",
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "{{SN_BASIC}}"
                         }
                     ],
                     "requestBody": {
@@ -25,7 +82,7 @@
         "UpdateZendeskCustomField": {
             "type": "ZIS::Action::Http",
             "properties": {
-                "name": "updateZendeskCustomField",
+                "name": "updateZendeskCustomFieldUpdateStatus",
                 "definition": {
                     "method": "PUT",
                     "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}",
@@ -36,7 +93,7 @@
                         },
                         {
                             "key": "Authorization",
-                            "value": "{{ZD_BA}}"
+                            "value": "{{ZD_BASIC}}"
                         }
                     ],
                     "requestBody": {
@@ -163,7 +220,7 @@
                         },
                         "UpdateTask": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTaskStatus",
                             "Parameters": {
                                 "endpoint": "sc_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -183,7 +240,7 @@
                         },
                         "UpdateIncidentTask": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowIncidentTaskStatus",
                             "Parameters": {
                                 "endpoint": "incident_task",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -203,7 +260,7 @@
                         },
                         "UpdateRequirement": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowRequerimentStatus",
                             "Parameters": {
                                 "endpoint": "sc_req_item",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -223,7 +280,7 @@
                         },
                         "UpdateProblem": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicket",
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowProblemStatus",
                             "Parameters": {
                                 "endpoint": "problem",
                                 "external_id.$": "$.input.ticket_event.ticket.external_id",
@@ -233,7 +290,7 @@
                         },
                         "UpdateCustomFieldOnZendesk": {
                             "Type": "Action",
-                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomField",
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldUpdateStatus",
                             "Parameters": {
                                 "ticket_id.$": "$.input.ticket_event.ticket.id"
                             },
