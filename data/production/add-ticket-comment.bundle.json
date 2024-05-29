@@ -1,0 +1,279 @@
+{
+    "uuid": "08cbb006-0d86-4394-859b-657c8fbe85f7",
+    "name": "AddTicketComment",
+    "integration": "service-now-dev",
+    "zendesk_account_id": 11733700,
+    "description": "Add comment to Service Now.",
+    "zis_template_version": "2019-10-14",
+    "resources": {
+        "AddTicketCommentFlow": {
+            "type": "ZIS::Flow",
+            "properties": {
+                "definition": {
+                    "StartAt": "InitialCheck",
+                    "States": {
+                        "CheckTicketType": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250003915931,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateTask"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 22946909984155,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateIncidentTask"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250005165595,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateRequirement"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 5863488158747,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateProblem"
+                                },
+                                {
+                                    "BooleanEquals": true,
+                                    "Next": "UpdateCustomFieldOnZendesk",
+                                    "Variable": "$.isServiceNowUpdate"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "Finish": {
+                            "Type": "Succeed"
+                        },
+                        "InitialCheck": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.tags"
+                                        },
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.external_id"
+                                        }
+                                    ],
+                                    "Next": "TagsPresent"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "TagsPresent": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "CheckTicketType",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.tags",
+                                "expr": "index(\"service-now-update\") != null"
+                            },
+                            "ResultPath": "$.isServiceNowUpdate",
+                            "Type": "Action"
+                        },
+                        "UpdateCustomFieldOnZendesk": {
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldAddComment",
+                            "End": true,
+                            "Parameters": {
+                                "ticket_id.$": "$.input.ticket_event.ticket.id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateIncidentTask": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateIncidentTask",
+                            "End": true,
+                            "Parameters": {
+                                "comment.$": "$.input.ticket_event.comment.body",
+                                "endpoint": "incident_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateProblem": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateProblem",
+                            "End": true,
+                            "Parameters": {
+                                "comment.$": "$.input.ticket_event.comment.body",
+                                "endpoint": "problem",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateRequirement": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateRequirement",
+                            "End": true,
+                            "Parameters": {
+                                "comment.$": "$.input.ticket_event.comment.body",
+                                "endpoint": "sc_req_item",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateTask": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTicketAddCommentUpdateTask",
+                            "End": true,
+                            "Parameters": {
+                                "comment.$": "$.input.ticket_event.comment.body",
+                                "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id"
+                            },
+                            "Type": "Action"
+                        }
+                    }
+                },
+                "name": "AddTicketCommentFlow"
+            }
+        },
+        "AddTicketCommentSpec": {
+            "type": "ZIS::JobSpec",
+            "properties": {
+                "event_source": "support",
+                "event_type": "ticket.CommentAdded",
+                "flow_name": "zis:service-now-dev:flow:AddTicketCommentFlow",
+                "name": "AddTicketCommentSpec"
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateIncidentTask": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowTicketAddCommentUpdateIncidentTask"
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateProblem": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowTicketAddCommentUpdateProblem"
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateRequirement": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowTicketAddCommentUpdateRequirement"
+            }
+        },
+        "UpdateServiceNowTicketAddCommentUpdateTask": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "work_notes.$": "$.comment"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowTicketAddCommentUpdateTask"
+            }
+        },
+        "UpdateZendeskCustomField": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "Basic YXJub2xkZ2FuZGFyaWxsYXNAZ21haWwuY29tL3Rva2VuOnlOUTVZdGo2RTlaR0c4a2pIRHljMDlxQThWaU1IVUNZOTBwVzAyRHg="
+                        }
+                    ],
+                    "method": "PUT",
+                    "requestBody": {
+                        "ticket": {
+                            "custom_fields": [
+                                {
+                                    "id": "22412711821211",
+                                    "value": false
+                                }
+                            ]
+                        }
+                    },
+                    "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}"
+                },
+                "name": "updateZendeskCustomFieldAddComment"
+            }
+        }
+    }
+}

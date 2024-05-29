@@ -1,0 +1,319 @@
+{
+    "uuid": "e29fd006-a1f7-4cd3-8132-45467ac45d5d",
+    "name": "UpdateTicketStatus",
+    "integration": "service-now-dev",
+    "zendesk_account_id": 11733700,
+    "description": "Update ticket status on Service Now.",
+    "zis_template_version": "2019-10-14",
+    "resources": {
+        "UpdateServiceNowIncidentTaskStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "state.$": "$.state"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowIncidentTaskStatus"
+            }
+        },
+        "UpdateServiceNowProblemStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "state.$": "$.state"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowProblemStatus"
+            }
+        },
+        "UpdateServiceNowRequirementStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "state.$": "$.state"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowRequerimentStatus"
+            }
+        },
+        "UpdateServiceNowTaskStatus": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "PATCH",
+                    "requestBody": {
+                        "state.$": "$.state"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/table/{{$.endpoint}}/{{$.external_id}}"
+                },
+                "name": "updateServiceNowTaskStatus"
+            }
+        },
+        "UpdateTicketStatusFlow": {
+            "type": "ZIS::Flow",
+            "properties": {
+                "definition": {
+                    "StartAt": "InitialCheck",
+                    "States": {
+                        "CheckTicketType": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250003915931,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "MapUpdateTaskStates"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 22946909984155,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "MapUpdateIncidentTaskStates"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250005165595,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "MapUpdateRequirementStates"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 5863488158747,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "MapUpdateProblemStates"
+                                },
+                                {
+                                    "BooleanEquals": true,
+                                    "Next": "UpdateCustomFieldOnZendesk",
+                                    "Variable": "$.isServiceNowUpdate"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "Finish": {
+                            "Type": "Succeed"
+                        },
+                        "InitialCheck": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.tags"
+                                        },
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.external_id"
+                                        }
+                                    ],
+                                    "Next": "TagsPresent"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "MapUpdateIncidentTaskStates": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "UpdateIncidentTask",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"hold\" then 401 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 6 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Type": "Action"
+                        },
+                        "MapUpdateProblemStates": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "UpdateProblem",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 102 elif $status == \"pending\" then 103 elif $status == \"solved\" then 106 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Type": "Action"
+                        },
+                        "MapUpdateRequirementStates": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "UpdateRequirement",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 7 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Type": "Action"
+                        },
+                        "MapUpdateTaskStates": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "UpdateTask",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.status",
+                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 6 else $status end"
+                            },
+                            "ResultPath": "$.mapped_state",
+                            "Type": "Action"
+                        },
+                        "TagsPresent": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "CheckTicketType",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.tags",
+                                "expr": "index(\"service-now-update\") != null"
+                            },
+                            "ResultPath": "$.isServiceNowUpdate",
+                            "Type": "Action"
+                        },
+                        "UpdateCustomFieldOnZendesk": {
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldUpdateStatus",
+                            "End": true,
+                            "Parameters": {
+                                "ticket_id.$": "$.input.ticket_event.ticket.id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateIncidentTask": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowIncidentTaskStatus",
+                            "End": true,
+                            "Parameters": {
+                                "endpoint": "incident_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "state.$": "$.mapped_state"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateProblem": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowProblemStatus",
+                            "End": true,
+                            "Parameters": {
+                                "endpoint": "problem",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "state.$": "$.mapped_state"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateRequirement": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowRequerimentStatus",
+                            "End": true,
+                            "Parameters": {
+                                "endpoint": "sc_req_item",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "state.$": "$.mapped_state"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateTask": {
+                            "ActionName": "zis:service-now-dev:action:updateServiceNowTaskStatus",
+                            "End": true,
+                            "Parameters": {
+                                "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "state.$": "$.mapped_state"
+                            },
+                            "Type": "Action"
+                        }
+                    }
+                },
+                "name": "UpdateTicketStatusFlow"
+            }
+        },
+        "UpdateTicketStatusSpec": {
+            "type": "ZIS::JobSpec",
+            "properties": {
+                "event_source": "support",
+                "event_type": "ticket.StatusChanged",
+                "flow_name": "zis:service-now-dev:flow:UpdateTicketStatusFlow",
+                "name": "UpdateTicketStatusSpec"
+            }
+        },
+        "UpdateZendeskCustomField": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "Basic YXJub2xkZ2FuZGFyaWxsYXNAZ21haWwuY29tL3Rva2VuOnlOUTVZdGo2RTlaR0c4a2pIRHljMDlxQThWaU1IVUNZOTBwVzAyRHg="
+                        }
+                    ],
+                    "method": "PUT",
+                    "requestBody": {
+                        "ticket": {
+                            "custom_fields": [
+                                {
+                                    "id": "22412711821211",
+                                    "value": false
+                                }
+                            ]
+                        }
+                    },
+                    "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}"
+                },
+                "name": "updateZendeskCustomFieldUpdateStatus"
+            }
+        }
+    }
+}

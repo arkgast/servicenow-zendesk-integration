@@ -1,0 +1,294 @@
+{
+    "uuid": "377409c1-068c-4851-af29-6598b1585252",
+    "name": "AddTicketAttachment",
+    "integration": "service-now-dev",
+    "zendesk_account_id": 11733700,
+    "description": "Add ticket attachment on Service Now.",
+    "zis_template_version": "2019-10-14",
+    "resources": {
+        "AddTicketAttachmentFlow": {
+            "type": "ZIS::Flow",
+            "properties": {
+                "definition": {
+                    "StartAt": "InitialCheck",
+                    "States": {
+                        "CheckTicketType": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250003915931,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateTaskDownloadFile"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 22946909984155,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateIncidentTaskDownloadFile"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 6250005165595,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateRequirementDownloadFile"
+                                },
+                                {
+                                    "And": [
+                                        {
+                                            "NumericEquals": 5863488158747,
+                                            "Variable": "$.input.ticket_event.ticket.form_id"
+                                        },
+                                        {
+                                            "BooleanEquals": false,
+                                            "Variable": "$.isServiceNowUpdate"
+                                        }
+                                    ],
+                                    "Next": "UpdateProblemDownloadFile"
+                                },
+                                {
+                                    "BooleanEquals": true,
+                                    "Next": "UpdateCustomFieldOnZendesk",
+                                    "Variable": "$.isServiceNowUpdate"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "Finish": {
+                            "Type": "Succeed"
+                        },
+                        "InitialCheck": {
+                            "Choices": [
+                                {
+                                    "And": [
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.tags"
+                                        },
+                                        {
+                                            "IsPresent": true,
+                                            "Variable": "$.input.ticket_event.ticket.external_id"
+                                        }
+                                    ],
+                                    "Next": "TagsPresent"
+                                }
+                            ],
+                            "Default": "Finish",
+                            "Type": "Choice"
+                        },
+                        "TagsPresent": {
+                            "ActionName": "zis:common:transform:Jq",
+                            "Next": "CheckTicketType",
+                            "Parameters": {
+                                "data.$": "$.input.ticket_event.ticket.tags",
+                                "expr": "index(\"service-now-update\") != null"
+                            },
+                            "ResultPath": "$.isServiceNowUpdate",
+                            "Type": "Action"
+                        },
+                        "UpdateCustomFieldOnZendesk": {
+                            "ActionName": "zis:service-now-dev:action:updateZendeskCustomFieldAddAttachment",
+                            "End": true,
+                            "Parameters": {
+                                "ticket_id.$": "$.input.ticket_event.ticket.id"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateIncidentTaskDownloadFile": {
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Next": "UpdateIncidentTaskUploadFile",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Type": "Action"
+                        },
+                        "UpdateIncidentTaskUploadFile": {
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
+                            "End": true,
+                            "Parameters": {
+                                "attachment.$": "$.attachment",
+                                "endpoint": "incident_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateProblemDownloadFile": {
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Next": "UpdateProblemUploadFile",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Type": "Action"
+                        },
+                        "UpdateProblemUploadFile": {
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
+                            "End": true,
+                            "Parameters": {
+                                "attachment.$": "$.attachment",
+                                "endpoint": "problem",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateRequirementDownloadFile": {
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Next": "UpdateRequirementUploadFile",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Type": "Action"
+                        },
+                        "UpdateRequirementUploadFile": {
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
+                            "End": true,
+                            "Parameters": {
+                                "attachment.$": "$.attachment",
+                                "endpoint": "sc_req_item",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "Type": "Action"
+                        },
+                        "UpdateTaskDownloadFile": {
+                            "ActionName": "zis:service-now-dev:action:downloadFileFromZendesk",
+                            "Next": "UpdateTaskUploadFile",
+                            "Parameters": {
+                                "content_url.$": "$.input.ticket_event.attachment.content_url"
+                            },
+                            "ResultPath": "$.attachment",
+                            "Type": "Action"
+                        },
+                        "UpdateTaskUploadFile": {
+                            "ActionName": "zis:service-now-dev:action:uploadFileToServiceNow",
+                            "End": true,
+                            "Parameters": {
+                                "attachment.$": "$.attachment",
+                                "endpoint": "sc_task",
+                                "external_id.$": "$.input.ticket_event.ticket.external_id",
+                                "filename.$": "$.input.ticket_event.attachment.filename"
+                            },
+                            "Type": "Action"
+                        }
+                    }
+                },
+                "name": "AddTicketAttachmentFlow"
+            }
+        },
+        "AddTicketAttachmentSpec": {
+            "type": "ZIS::JobSpec",
+            "properties": {
+                "event_source": "support",
+                "event_type": "ticket.AttachmentLinkedToComment",
+                "flow_name": "zis:service-now-dev:flow:AddTicketAttachmentFlow",
+                "name": "AddTicketAttachmentSpec"
+            }
+        },
+        "DownloadFileFromZendesk": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "method": "GET",
+                    "url.$": "$.content_url"
+                },
+                "name": "downloadFileFromZendesk"
+            }
+        },
+        "UpdateZendeskCustomField": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "Basic YXJub2xkZ2FuZGFyaWxsYXNAZ21haWwuY29tL3Rva2VuOnlOUTVZdGo2RTlaR0c4a2pIRHljMDlxQThWaU1IVUNZOTBwVzAyRHg="
+                        }
+                    ],
+                    "method": "PUT",
+                    "requestBody": {
+                        "ticket": {
+                            "custom_fields": [
+                                {
+                                    "id": "22412711821211",
+                                    "value": false
+                                }
+                            ]
+                        }
+                    },
+                    "url": "https://minkasupport.zendesk.com/api/v2/tickets/{{$.ticket_id}}"
+                },
+                "name": "updateZendeskCustomFieldAddAttachment"
+            }
+        },
+        "UploadFileToServiceNow": {
+            "type": "ZIS::Action::Http",
+            "properties": {
+                "definition": {
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "multipart/form-data"
+                        },
+                        {
+                            "key": "Accept",
+                            "value": "*/*"
+                        },
+                        {
+                            "key": "Authorization",
+                            "value": "Basic aW50ZWdyYWNpb24uemVuZGVzazpaZW5kZXNrMjAyNCE="
+                        }
+                    ],
+                    "method": "POST",
+                    "queryParams": [
+                        {
+                            "key": "table_name",
+                            "value": "$.endpoint"
+                        },
+                        {
+                            "key": "table_sys_id",
+                            "value": "$.external_id"
+                        },
+                        {
+                            "key": "file_name",
+                            "value": "$.filename"
+                        }
+                    ],
+                    "requestBody": {
+                        "file.$": "$.attachment"
+                    },
+                    "url": "https://achprd.service-now.com/api/now/attachment/file"
+                },
+                "name": "uploadFileToServiceNow"
+            }
+        }
+    }
+}
