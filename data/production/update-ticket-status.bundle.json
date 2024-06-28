@@ -188,7 +188,7 @@
                             "Next": "UpdateProblem",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 102 elif $status == \"pending\" then 103 elif $status == \"solved\" then 106 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 103 elif $status == \"open\" then 102 elif $status == \"pending\" then 104 elif $status == \"solved\" then 106 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Type": "Action"
@@ -198,7 +198,7 @@
                             "Next": "UpdateRequirement",
                             "Parameters": {
                                 "data.$": "$.input.ticket_event.ticket.status",
-                                "expr": ". as $status | if $status == \"hold\" then 1 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 7 else $status end"
+                                "expr": ". as $status | if $status == \"hold\" then 10 elif $status == \"open\" then 2 elif $status == \"pending\" then -5 elif $status == \"solved\" then 6 else $status end"
                             },
                             "ResultPath": "$.mapped_state",
                             "Type": "Action"
